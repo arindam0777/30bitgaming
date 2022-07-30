@@ -6,7 +6,7 @@
 .banner{
     width: 100%;
     height: 100vh;
-    background-image: linear-gradient(rgb(0, 0, 1),rgba(0,0,0,0.75)),url(https://1.bp.blogspot.com/-6dKOctI9L_4/UrfNvKm-P6I/AAAAAAAANmk/MF2KNYMDJzo/s1600/merry-christmas-background-wallpaper-SNOW.gif);
+    background-image: linear-gradient(rgb(0, 0, 1),rgba(0,0,0,0.75)),url(https://media.istockphoto.com/photos/goddess-durga-durga-puja-is-the-one-of-the-most-famous-festival-in-picture-id1093271754?k=6&m=1093271754&s=170667a&w=0&h=4r9d-AsZ3VDH9W98FLteN8QoqCJKbSvFh8_pCNfD29Q=);
     background-size: cover;
     background-position: center;
 }
@@ -19,8 +19,9 @@
     justify-content: space-between;
 }
 .logo{
-    width: 100px;
+    width: 40px;
     cursor: pointer;
+
 
 }
 .navbar ul li{
