@@ -1,34 +1,48 @@
 <!DOCTYPE html>
-    <head>
-        <title>30BIT.COM</title>
-        <link rel="stylesheet" href="./ari.css">
-    </head>
-    <body>
-        <div class="banner">
-            <div class="navbar">
-                <img src="" class="logo">
-                <ul>
-                    <li><a href="./Index.html">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">More</a></li>       
-                </ul>
-                <audio controls loop autoplay>
-                    <source src="dugga elo.mp3" type="audio/mp3">
-                </audio>
+<html>
+   <head>
+      <title>music player</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css" href="Index.css">
+   </head>
+   <body>
+      <div class="main">
+         <p id="logo"><i class="fa fa-music"></i>Music</p>
+         <!--- left part --->
+         <div class="left">
+            <!--- song img --->
+            <img id="track_image">
+            <div class="volume">
+               <p id="volume_show">90</p>
+               <i class="fa fa-volume-up" aria-hidden="true" onclick="mute_sound()" id="volume_icon"></i>
+               <input type="range" min="0" max="100" value="90" onchange="volume_change()" id="volume">  
             </div>
-
-<div class="content">
-    <h1>30BIT CREATIONS</h1>
-    <p>Durga puja Edition <br> Only 65 days are left for Durga Puja 2022. The puja will start on the 1st of October 2022 (Saturday)  
-    </p>
-    <div>
-        <a href="https://youtube.com/c/BUZZ999YT">  
-            <button>WATCH VIDEOS</button>  
-          </a>
-    </div>
-</div>
-
-        </div>
-    </body>
+         </div>
+         <!--- right part --->
+         <div class="right">
+            <div class="show_song_no">
+               <p id="present">1</p>
+               <p>/</p>
+               <p id="total">5</p>
+            </div>
+            <!--- song title & artist name --->
+            <p id="title">lost sky dreams.mp3</p>
+            <p id="artist">Artist name</p>
+            <!--- middle part --->
+            <div class="middle">
+               <button onclick="previous_song()" id="pre"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
+               <button onclick="justplay()" id="play"><i class="fa fa-play" aria-hidden="true"></i></button>
+               <button onclick="next_song()" id="next"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+            </div>
+            <!--- song duration part --->
+            <div class="duration">
+               <input type="range" min="0" max="100" value="0" id="duration_slider" onchange="change_duration()">
+            </div>
+            <button id="auto" onclick="autoplay_switch()">Auto play <i class="fa fa-circle-o-notch" aria-hidden="true"></i></button>
+         </div>
+      </div>
+      <!--- Add javascript file --->
+      <script src="script.js"></script>
+   </body>
 </html>
