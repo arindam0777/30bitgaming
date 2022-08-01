@@ -1,255 +1,237 @@
-let previous = document.querySelector('#pre');
-let play = document.querySelector('#play');
-let next = document.querySelector('#next');
-let title = document.querySelector('#title');
-let recent_volume = document.querySelector('#volume');
-let volume_show = document.querySelector('#volume_show');
-let slider = document.querySelector('#duration_slider');
-let show_duration = document.querySelector('#show_duration');
-let track_image = document.querySelector('#track_image');
-let auto_play = document.querySelector('#auto');
-let present = document.querySelector('#present');
-let total = document.querySelector('#total');
-let artist = document.querySelector('#artist');
+// variables
+const generalBtn = document.getElementById("genral");
+const businessBtn = document.getElementById("business");
+const sportsBtn = document.getElementById("sport");
+const entertainmentBtn = document.getElementById("entertainment");
+const technologyBtn = document.getElementById("technology");
+const searchBtn = document.getElementById("searchBtn");
+
+const newsQuery = document.getElementById("newsQuery");
+const newsType = document.getElementById("newsType");
+const newsdetails = document.getElementById("newsdetails");
+
+// Array
+var newsDataArr = [];
+
+// apis 
+const API_KEY = "9e9b7d1c2042476586e5d3584b6e7cab";
+const HEADLINES_NEWS = "https://newsapi.org/v2/top-headlines?country=in&apiKey=";
+const GENERAL_NEWS = "https://newsapi.org/v2/top-headlines?country=in&category=general&apiKey=";
+const BUSINESS_NEWS = "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=";
+const SPORTS_NEWS = "https://newsapi.org/v2/top-headlines?country=in&category=sports&apiKey=";
+const ENTERTAINMENT_NEWS = "https://newsapi.org/v2/top-headlines?country=in&category=entertainment&apiKey=";
+const TECHNOLOGY_NEWS = "https://newsapi.org/v2/top-headlines?country=in&category=technology&pageSize=8&apiKey=";
+const SEARCH_NEWS = "https://newsapi.org/v2/everything?q=";
+
+window.onload = function() {
+    newsType.innerHTML="<h4>Headlines</h4>";
+    fetchHeadlines();
+};
 
 
+generalBtn.addEventListener("click",function(){
+    newsType.innerHTML="<h4>General news</h4>";
+    fetchGeneralNews();
+});
 
-let timer;
-let autoplay = 0;
+businessBtn.addEventListener("click",function(){
+    newsType.innerHTML="<h4>Business</h4>";
+    fetchBusinessNews();
+});
 
-let index_no = 0;
-let Playing_song = false;
+sportsBtn.addEventListener("click",function(){
+    newsType.innerHTML="<h4>Sports</h4>";
+    fetchSportsNews();
+});
 
-//create a audio Element
-let track = document.createElement('audio');
+entertainmentBtn.addEventListener("click",function(){
+    newsType.innerHTML="<h4>Entertainment</h4>";
+    fetchEntertainmentNews();
+});
 
+technologyBtn.addEventListener("click",function(){
+    newsType.innerHTML="<h4>Technology</h4>";
+    fetchTechnologyNews();
+});
 
-//All songs list
-let All_song = [{
-		name: "Lost Sky Dreams",
-		path: "1.mp3",
-		img: "1.jpg",
-        singer: ""
-	},
-	{
-		name: "Elektronomia - Limitless",
-		path: "elektronomia-limitless.mp3",
-		img: "https://i.ytimg.com/vi/cIpzqjLAs6Y/maxresdefault.jpg",
-		singer: ""
-	},
-	{
-		name: "Tu Aake Dekle",
-		path: "TU_AAKE_DEKHLE__Slowed_Reverbed_____KING(256k).mp3",
-		img: "https://i.ytimg.com/vi/ccWglXpg8vY/hqdefault.jpg",
-		singer: ""
-	},
-    {
-		name: "Zaalima",
-		path: "Zaalima__Slowed_and_Reverb____Raees___Arijit_Singh___Harshdeep_Kaur(256k).mp3",
-		img: "https://i.ytimg.com/vi/SQmCaPfsIho/maxresdefault.jpg",
-		singer: ""
-	},
-    {
-		name: "No Love",
-		path: "No_Love_-_[Slowed+Reverb](256k).mp3",
-		img: "https://i.ytimg.com/vi/Xw09kT_wtf0/maxresdefault.jpg",
-		singer: ""
-	},
-    {
-		name: "Mere Sapno ki Rani x The Box",
-		path: "Mera_Sapno_Ki_Rani_X_The_Box__Skeletron_Edit____8D_Audio_Song___Use_Headphones___AK_8D_Songs(256k).mp3",
-		img: "https://i.ytimg.com/vi/Vw4-RQ1sMDQ/maxresdefault.jpg",
-		singer: ""
-	},
-    {
-		name: "Excuses",
-		path: "Excuses(256k).mp3",
-		img: "https://cover.djjohal.pro/music/thumb/489751/Excuses.jpg",
-		singer: ""
-	},
-    {
-		name: "Main Royaan",
-		path: "Main_Royaan(slowed+reverb)(256k).mp3",
-		img: "https://th.bing.com/th/id/OIP.RpqRyAeDNxCnJJb6dIEPeQHaEK?pid=ImgDet&rs=1",
-		singer: ""
-	},
-    {
-		name: "HOOKAH BAR",
-		path: "HOOKAH_BAR.mp3",
-		img: "https://th.bing.com/th/id/OIP.P7Cmxc_QIfEsiqmIUI6I0QHaEK?pid=ImgDet&rs=1",
-		singer: ""
-	},
-    {
-		name: "Kabira",
-		path: "Kabira.mp3",
-		img: "https://th.bing.com/th/id/R.238128e2db42a2ddf256e3a6eb41b15d?rik=vmrRS5dlEhbstg&riu=http%3a%2f%2fwww.indiamarks.com%2fwp-content%2fuploads%2fYeh-Jawaani-Hai-Deewanis-Kabira-Song.jpg&ehk=j9sDMO2p25ObR2rARte0eWOoVDg8ikXdijxKrzuMDjA%3d&risl=&pid=ImgRaw&r=0",
-		singer: ""
-	},
-    {
-		name: "Chittiyaan Kalaiyaan",
-		path: "chittiyaan_kalaiyaan.mp3",
-		img: "https://i.pinimg.com/originals/18/af/f0/18aff01da8ee5419b8f8abf9e1ed5f3c.jpg",
-		singer: ""
-	},
-    {
-		name: "Coldplay Hymn",
-		path: "Coldplay_Hymn.mp3",
-		img: "https://th.bing.com/th/id/OIP.PHbYVkZNgDp4qPiLxFzHBAHaHa?pid=ImgDet&rs=1",
-		singer: ""
-	},
-    {
-		name: "Middle Of The Night",
-		path: "Elley.mp3",
-		img: "https://i.ytimg.com/vi/CfgcbCe9Z_o/maxresdefault.jpg",
-		singer: ""
-	},
-    {
-		name: "DripReport_Skechers",
-		path: "DripReport_Skechers.mp3",
-		img: "https://i.ytimg.com/vi/1tKp5j3p7Tc/maxresdefault.jpg",
-		singer: ""
-	},
-    {
-		name: "Runaway_x_Kaise_Hua",
-		path: "Runaway_x_Kaise_Hua.mp3",
-		img: "https://i.ytimg.com/vi/Cv6bOSFVFiM/hqdefault.jpg",
-		singer: ""
-	}
-];
+searchBtn.addEventListener("click",function(){
+    newsType.innerHTML="<h4>Search : "+newsQuery.value+"</h4>";
+    fetchQueryNews();
+});
 
+const fetchHeadlines = async () => {
+    const response = await fetch(HEADLINES_NEWS+API_KEY);
+    newsDataArr = [];
+    if(response.status >=200 && response.status < 300) {
+        const myJson = await response.json();
+        newsDataArr = myJson.articles;
+    } else {
+        // handle errors
+        console.log(response.status, response.statusText);
+        newsdetails.innerHTML = "<h5>No data found.</h5>"
+        return;
+    }
 
-// All functions
-
-
-// function load the track
-function load_track(index_no) {
-	clearInterval(timer);
-	reset_slider();
-
-	track.src = All_song[index_no].path;
-	title.innerHTML = All_song[index_no].name;
-	track_image.src = All_song[index_no].img;
-	artist.innerHTML = All_song[index_no].singer;
-	track.load();
-
-	timer = setInterval(range_slider, 1000);
-	total.innerHTML = All_song.length;
-	present.innerHTML = index_no + 1;
-}
-
-load_track(index_no);
-
-
-//mute sound function
-function mute_sound() {
-	track.volume = 0;
-	volume.value = 0;
-	volume_show.innerHTML = 0;
+    displayNews();
 }
 
 
-// checking.. the song is playing or not
-function justplay() {
-	if (Playing_song == false) {
-		playsong();
+const fetchGeneralNews = async () => {
+    const response = await fetch(GENERAL_NEWS+API_KEY);
+    newsDataArr = [];
+    if(response.status >=200 && response.status < 300) {
+        const myJson = await response.json();
+        newsDataArr = myJson.articles;
+    } else {
+        // handle errors
+        console.log(response.status, response.statusText);
+        newsdetails.innerHTML = "<h5>No data found.</h5>"
+        return;
+    }
 
-	} else {
-		pausesong();
-	}
+    displayNews();
 }
 
+const fetchBusinessNews = async () => {
+    const response = await fetch(BUSINESS_NEWS+API_KEY);
+    newsDataArr = [];
+    if(response.status >=200 && response.status < 300) {
+        const myJson = await response.json();
+        newsDataArr = myJson.articles;
+    } else {
+        // handle errors
+        console.log(response.status, response.statusText);
+        newsdetails.innerHTML = "<h5>No data found.</h5>"
+        return;
+    }
 
-// reset song slider
-function reset_slider() {
-	slider.value = 0;
+    displayNews();
 }
 
-// play song
-function playsong() {
-	track.play();
-	Playing_song = true;
-	play.innerHTML = '<i class="fa fa-pause" aria-hidden="true"></i>';
+const fetchEntertainmentNews = async () => {
+    const response = await fetch(ENTERTAINMENT_NEWS+API_KEY);
+    newsDataArr = [];
+    if(response.status >=200 && response.status < 300) {
+        const myJson = await response.json();
+        console.log(myJson);
+        newsDataArr = myJson.articles;
+    } else {
+        // handle errors
+        console.log(response.status, response.statusText);
+        newsdetails.innerHTML = "<h5>No data found.</h5>"
+        return;
+    }
+
+    displayNews();
 }
 
-//pause song
-function pausesong() {
-	track.pause();
-	Playing_song = false;
-	play.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
+const fetchSportsNews = async () => {
+    const response = await fetch(SPORTS_NEWS+API_KEY);
+    newsDataArr = [];
+    if(response.status >=200 && response.status < 300) {
+        const myJson = await response.json();
+        newsDataArr = myJson.articles;
+    } else {
+        // handle errors
+        console.log(response.status, response.statusText);
+        newsdetails.innerHTML = "<h5>No data found.</h5>"
+        return;
+    }
+
+    displayNews();
 }
 
+const fetchTechnologyNews = async () => {
+    const response = await fetch(TECHNOLOGY_NEWS+API_KEY);
+    newsDataArr = [];
+    if(response.status >=200 && response.status < 300) {
+        const myJson = await response.json();
+        newsDataArr = myJson.articles;
+    } else {
+        // handle errors
+        console.log(response.status, response.statusText);
+        newsdetails.innerHTML = "<h5>No data found.</h5>"
+        return;
+    }
 
-// next song
-function next_song() {
-	if (index_no < All_song.length - 1) {
-		index_no += 1;
-		load_track(index_no);
-		playsong();
-	} else {
-		index_no = 0;
-		load_track(index_no);
-		playsong();
-
-	}
+    displayNews();
 }
 
+const fetchQueryNews = async () => {
 
-// previous song
-function previous_song() {
-	if (index_no > 0) {
-		index_no -= 1;
-		load_track(index_no);
-		playsong();
+    if(newsQuery.value == null)
+        return;
 
-	} else {
-		index_no = All_song.length;
-		load_track(index_no);
-		playsong();
-	}
+    const response = await fetch(SEARCH_NEWS+encodeURIComponent(newsQuery.value)+"&apiKey="+API_KEY);
+    newsDataArr = [];
+    if(response.status >= 200 && response.status < 300) {
+        const myJson = await response.json();
+        newsDataArr = myJson.articles;
+    } else {
+        //error handle
+        console.log(response.status, response.statusText);
+        newsdetails.innerHTML = "<h5>No data found.</h5>"
+        return;
+    }
+
+    displayNews();
 }
 
+function displayNews() {
 
-// change volume
-function volume_change() {
-	volume_show.innerHTML = recent_volume.value;
-	track.volume = recent_volume.value / 100;
-}
+    newsdetails.innerHTML = "";
 
-// change slider position 
-function change_duration() {
-	slider_position = track.duration * (slider.value / 100);
-	track.currentTime = slider_position;
-}
+    // if(newsDataArr.length == 0) {
+    //     newsdetails.innerHTML = "<h5>No data found.</h5>"
+    //     return;
+    // }
 
-// autoplay function
-function autoplay_switch() {
-	if (autoplay == 1) {
-		autoplay = 0;
-		auto_play.style.background = "rgba(255,255,255,0.2)";
-	} else {
-		autoplay = 1;
-		auto_play.style.background = "#FF8A65";
-	}
-}
+    newsDataArr.forEach(news => {
 
+        var date = news.publishedAt.split("T");
 
-function range_slider() {
-	let position = 0;
+        var col = document.createElement('div');
+        col.className="col-sm-12 col-md-4 col-lg-3 p-2 card";
 
-	// update slider position
-	if (!isNaN(track.duration)) {
-		position = track.currentTime * (100 / track.duration);
-		slider.value = position;
-	}
+        var card = document.createElement('div');
+        card.className = "p-2";
 
+        var image = document.createElement('img');
+        image.setAttribute("height","matchparent");
+        image.setAttribute("width","100%");
+        image.src=news.urlToImage;
 
-	// function will run when the song is over
-	if (track.ended) {
-		play.innerHTML = '<i class="fa fa-play" aria-hidden="true"></i>';
-		if (autoplay == 1) {
-			index_no += 1;
-			load_track(index_no);
-			playsong();
-		}
-	}
+        var cardBody = document.createElement('div');
+
+        var newsHeading = document.createElement('h5');
+        newsHeading.className = "card-title";
+        newsHeading.innerHTML = news.title;
+
+        var dateHeading = document.createElement('h6');
+        dateHeading.className = "text-primary";
+        dateHeading.innerHTML = date[0];
+
+        var discription = document.createElement('p');
+        discription.className="text-muted";
+        discription.innerHTML = news.description;
+
+        var link = document.createElement('a');
+        link.className="btn btn-dark";
+        link.setAttribute("target", "_blank");
+        link.href = news.url;
+        link.innerHTML="Read more";
+
+        cardBody.appendChild(newsHeading);
+        cardBody.appendChild(dateHeading);
+        cardBody.appendChild(discription);
+        cardBody.appendChild(link);
+
+        card.appendChild(image);
+        card.appendChild(cardBody);
+
+        col.appendChild(card);
+
+        newsdetails.appendChild(col);
+    });
+
 }
